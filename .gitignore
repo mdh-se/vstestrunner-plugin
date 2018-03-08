@@ -4,8 +4,9 @@
 *.jar
 *.war
 *.ear
-/target
-/.settings
-/.project
-/.classpath
-/work
+target/
+.settings
+.project
+.classpath
+work/
+.idea/

@@ -39,6 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.TouchBuilder;
 
 /**
  *
@@ -64,20 +65,14 @@ public class FileSetTest {
         builder.setUseVsixExtensions(false);
         builder.setUseVs2017Plus(false);
         builder.setPlatform("");
-        builder.setOtherPlatform("");
         builder.setFramework("");
-        builder.setOtherFramework("");
         builder.setLogger("trx");
-        builder.setOtherLogger("");
         builder.setCmdLineArgs("");
         builder.setFailBuild(true);
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        //build.getBuildStatusSummary().message;
-        assertTrue(build.getResult() == Result.FAILURE);
-        String s = FileUtils.readFileToString(build.getLogFile());
-        assertTrue(s.contains("no file matches the pattern **\\*.Tests"));
-        //String content = build.getWorkspace().child("AssemblyVersion.cs").readToString();
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains("no files matching the pattern **\\*.Tests", build);
     }
 
     @Test
@@ -95,27 +90,21 @@ public class FileSetTest {
         builder.setUseVsixExtensions(false);
         builder.setUseVs2017Plus(false);
         builder.setPlatform("");
-        builder.setOtherPlatform("");
         builder.setFramework("");
-        builder.setOtherFramework("");
         builder.setLogger("trx");
-        builder.setOtherLogger("");
         builder.setCmdLineArgs("");
         builder.setFailBuild(true);
         project.getBuildersList().add(new TestBuilder() {
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-                build.getWorkspace().child("aaa\\aaa.Tests.dll").write("La donna è mobile, qual piuma al vento", "UTF-8");
+                build.getWorkspace().child("aaa/aaa.Tests.dll").write("La donna è mobile, qual piuma al vento", "UTF-8");
                 build.getWorkspace().child("vstest.console.exe").chmod(700);
                 return true;
             }
+
         });
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        //build.getBuildStatusSummary().message;
-        assertTrue(build.getResult() == Result.FAILURE);
-        String s = FileUtils.readFileToString(build.getLogFile());
-        //assertTrue(s.contains("no file matches the pattern **\\*.Tests.dll"));
-        //String content = build.getWorkspace().child("AssemblyVersion.cs").readToString();
-        assertTrue(s.contains("aaa" + File.separator + "aaa.Tests.dll"));
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains("aaa" + File.separator + "aaa.Tests.dll", build);
     }
 }

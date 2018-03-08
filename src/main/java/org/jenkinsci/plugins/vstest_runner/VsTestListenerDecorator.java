@@ -3,10 +3,10 @@ package org.jenkinsci.plugins.vstest_runner;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hudson.EnvVars;
 import hudson.console.LineTransformationOutputStream;
 import hudson.model.TaskListener;
 
@@ -64,7 +64,7 @@ public class VsTestListenerDecorator extends LineTransformationOutputStream {
             return;
         }
 
-        String line = new String(bytes, 0, len);
+        String line = new String(bytes, 0, len, Charset.defaultCharset());
 
         Matcher trxMatcher = this.trxPattern.matcher(line);
         if (trxMatcher.find()) {
@@ -84,6 +84,6 @@ public class VsTestListenerDecorator extends LineTransformationOutputStream {
             }
         }
 
-        this.listener.write(line.getBytes());
+        this.listener.write(line.getBytes(Charset.defaultCharset()));
     }
 }

@@ -41,6 +41,14 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>structs</artifactId>
+      <version>1.14</version>
+    </dependency>
+  </dependencies>
   
   <repositories>
     <repository>

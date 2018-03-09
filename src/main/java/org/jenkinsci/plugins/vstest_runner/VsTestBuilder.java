@@ -66,13 +66,13 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     protected Object readResolve() {
-        if (this.otherPlatform != null) {
+        if (StringUtils.isNotBlank((otherPlatform))) {
             this.platform = otherPlatform;
         }
-        if (this.otherFramework != null) {
+        if (StringUtils.isNotBlank(otherFramework)) {
             this.framework = otherFramework;
         }
-        if (this.otherLogger != null) {
+        if (StringUtils.isNotBlank(otherLogger)) {
             this.logger = otherLogger;
         }
         return this;

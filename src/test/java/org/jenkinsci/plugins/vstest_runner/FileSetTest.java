@@ -23,26 +23,22 @@
  */
 package org.jenkinsci.plugins.vstest_runner;
 
-import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
+
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.io.FileUtils;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
-import org.jvnet.hudson.test.TouchBuilder;
 
 /**
- *
  * @author BELLINSALARIN
  */
 public class FileSetTest {
@@ -51,7 +47,7 @@ public class FileSetTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    public void testResolveFileSet_noMatch() throws InterruptedException, IOException, Exception {
+    public void testResolveFileSet_noMatch() throws Exception {
 
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
@@ -76,7 +72,7 @@ public class FileSetTest {
     }
 
     @Test
-    public void testResolveFileSet_someMatch() throws InterruptedException, IOException, Exception {
+    public void testResolveFileSet_someMatch() throws Exception {
 
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();

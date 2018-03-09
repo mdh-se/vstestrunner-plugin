@@ -47,13 +47,11 @@ public class VsTestListenerDecorator extends LineTransformationOutputStream {
         this.coveragePattern = Pattern.compile(COVERAGE_PATTERN);
     }
 
-    public String getTrxFile()
-    {
+    public String getTrxFile() {
         return this.trxFile;
     }
 
-    public String getCoverageFile()
-    {
+    public String getCoverageFile() {
         return this.coverageFile;
     }
 

@@ -4,62 +4,62 @@
 
     <j:if test="${descriptor.showVSTestToolOptions()}">
         <f:entry title="${%Version}" field="vsTestName">
-            <f:select />
+            <f:select/>
         </f:entry>
     </j:if>
 
     <f:entry title="${%TestFiles}" field="testFiles">
-        <f:expandableTextbox />
+        <f:expandableTextbox/>
     </f:entry>
 
     <f:entry title="${%Settings}" field="settings">
-        <f:textbox />
+        <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Tests}" field="tests">
-        <f:textbox />
+        <f:textbox/>
     </f:entry>
 
     <f:entry title="${%TestCaseFilter}" field="testCaseFilter">
-        <f:textbox />
+        <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Enablecodecoverage}" field="enablecodecoverage">
-        <f:checkbox default="${descriptor.defaultEnableCodeCoverage}" />
+        <f:checkbox default="${descriptor.defaultEnableCodeCoverage}"/>
     </f:entry>
 
     <f:advanced>
 
         <f:entry title="${%InIsolation}" field="inIsolation">
-            <f:checkbox default="false" />
+            <f:checkbox/>
         </f:entry>
 
         <f:entry title="${%UseVsixExtensions}" field="useVsixExtensions">
-            <f:checkbox default="false" />
+            <f:checkbox/>
         </f:entry>
 
-		<f:entry title="${%UseVs2017Plus}" field="useVs2017Plus">
-            <f:checkbox default="false" />
+        <f:entry title="${%UseVs2017Plus}" field="useVs2017Plus">
+            <f:checkbox/>
         </f:entry>
 
         <f:entry title="${%Platform}" field="platform">
-            <f:combobox />
+            <f:combobox/>
         </f:entry>
 
         <f:entry title="${%Framework}" field="framework">
-            <f:combobox />
+            <f:combobox/>
         </f:entry>
 
         <f:entry title="${%Logger}" field="logger">
-            <f:combobox />
+            <f:combobox/>
         </f:entry>
 
         <f:entry title="${%CommandLineArguments}" field="cmdLineArgs">
-            <f:textbox />
+            <f:textbox/>
         </f:entry>
 
         <f:entry title="${%FailBuild}" field="failBuild">
-            <f:checkbox default="${descriptor.defaultFailBuild}" />
+            <f:checkbox default="${descriptor.defaultFailBuild}"/>
         </f:entry>
 
     </f:advanced>

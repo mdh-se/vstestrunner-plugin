@@ -35,7 +35,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 /**
- *
  * @author Yasuyuki Saito
  */
 public class VsTestBuilder extends Builder implements SimpleBuildStep {
@@ -49,18 +48,21 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     private String framework;
     private String logger = DescriptorImpl.defaultLogger;
     private String cmdLineArgs;
-    @Deprecated transient private String otherFramework;
-    @Deprecated transient private String otherLogger;
-    @Deprecated transient private String otherPlatform;
+    @Deprecated
+    transient private String otherFramework;
+    @Deprecated
+    transient private String otherLogger;
+    @Deprecated
+    transient private String otherPlatform;
     private boolean inIsolation;
     private boolean useVsixExtensions;
     private boolean useVs2017Plus;
     private boolean enablecodecoverage = DescriptorImpl.defaultEnableCodeCoverage;
     private boolean failBuild = DescriptorImpl.defaultFailBuild;
-    
+
     @DataBoundConstructor
     public VsTestBuilder() {
-        
+
     }
 
     protected Object readResolve() {
@@ -105,9 +107,9 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     public boolean isUseVs2017Plus() {
-    	return useVs2017Plus;
+        return useVs2017Plus;
     }
-    
+
     public String getPlatform() {
         return platform;
     }
@@ -133,78 +135,77 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setVsTestName(String vsTestName)
-    {
-    	this.vsTestName = Util.fixEmptyAndTrim(vsTestName);
-     }       
-    @DataBoundSetter
-    public void setTestFiles(String testFiles)
-    {
-    	this.testFiles = Util.fixEmptyAndTrim(testFiles);
-     }       
-    @DataBoundSetter
-    public void setSettings(String settings)
-    {
-           this.settings = Util.fixEmptyAndTrim(settings);
-    }       
-    @DataBoundSetter
-    public void setTests(String tests)
-    {
-            this.tests = Util.fixEmptyAndTrim(tests);
-    }       
-    @DataBoundSetter
-    public void setTestCaseFilter(String testCaseFilter)
-    {
-            this.testCaseFilter = Util.fixEmptyAndTrim(testCaseFilter);
+    public void setVsTestName(String vsTestName) {
+        this.vsTestName = Util.fixEmptyAndTrim(vsTestName);
     }
+
     @DataBoundSetter
-    public void setPlatform(String platform)
-    {
-            this.platform = Util.fixEmptyAndTrim(platform);
-    }       
+    public void setTestFiles(String testFiles) {
+        this.testFiles = Util.fixEmptyAndTrim(testFiles);
+    }
+
     @DataBoundSetter
-    public void setFramework(String framework)
-    {       
-            this.framework = Util.fixEmptyAndTrim(framework);
-     }       
+    public void setSettings(String settings) {
+        this.settings = Util.fixEmptyAndTrim(settings);
+    }
+
     @DataBoundSetter
-    public void setLogger(String logger)
-    {
+    public void setTests(String tests) {
+        this.tests = Util.fixEmptyAndTrim(tests);
+    }
+
+    @DataBoundSetter
+    public void setTestCaseFilter(String testCaseFilter) {
+        this.testCaseFilter = Util.fixEmptyAndTrim(testCaseFilter);
+    }
+
+    @DataBoundSetter
+    public void setPlatform(String platform) {
+        this.platform = Util.fixEmptyAndTrim(platform);
+    }
+
+    @DataBoundSetter
+    public void setFramework(String framework) {
+        this.framework = Util.fixEmptyAndTrim(framework);
+    }
+
+    @DataBoundSetter
+    public void setLogger(String logger) {
         this.logger = Util.fixEmptyAndTrim(logger);
         if (this.logger == null) {
             this.logger = DescriptorImpl.defaultLogger;
         }
-     }       
-    @DataBoundSetter
-    public void setCmdLineArgs(String cmdLineArgs)
-    {      
-            this.cmdLineArgs = Util.fixEmptyAndTrim(cmdLineArgs);
-    }       
-    @DataBoundSetter
-    public void setEnablecodecoverage(boolean enablecodecoverage)
-    {
-            this.enablecodecoverage = enablecodecoverage;
-    }       
-    @DataBoundSetter
-    public void setInIsolation(boolean inIsolation)
-    {
-            this.inIsolation = inIsolation;
-    }       
-    @DataBoundSetter
-    public void setUseVsixExtensions(boolean useVsixExtensions)
-    {
-            this.useVsixExtensions = useVsixExtensions;
-    }       
-    @DataBoundSetter
-    public void setUseVs2017Plus(boolean useVs2017Plus)
-    {
-            this.useVs2017Plus = useVs2017Plus;
     }
+
     @DataBoundSetter
-    public void setFailBuild(boolean failBuild)
-    {
-            this.failBuild = failBuild;
-    }       
+    public void setCmdLineArgs(String cmdLineArgs) {
+        this.cmdLineArgs = Util.fixEmptyAndTrim(cmdLineArgs);
+    }
+
+    @DataBoundSetter
+    public void setEnablecodecoverage(boolean enablecodecoverage) {
+        this.enablecodecoverage = enablecodecoverage;
+    }
+
+    @DataBoundSetter
+    public void setInIsolation(boolean inIsolation) {
+        this.inIsolation = inIsolation;
+    }
+
+    @DataBoundSetter
+    public void setUseVsixExtensions(boolean useVsixExtensions) {
+        this.useVsixExtensions = useVsixExtensions;
+    }
+
+    @DataBoundSetter
+    public void setUseVs2017Plus(boolean useVs2017Plus) {
+        this.useVs2017Plus = useVs2017Plus;
+    }
+
+    @DataBoundSetter
+    public void setFailBuild(boolean failBuild) {
+        this.failBuild = failBuild;
+    }
 
     @NonNull
     public VsTestInstallation getVsTest(TaskListener listener) {
@@ -224,7 +225,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @author Yasuyuki Saito
      */
     @Extension
@@ -252,7 +252,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
 
         @SuppressWarnings("unused") // Used by Stapler
         public boolean showVSTestToolOptions() {
-            return getVSTestToolDescriptor().getInstallations().length>1;
+            return getVSTestToolDescriptor().getInstallations().length > 1;
         }
 
         private VsTestInstallation.DescriptorImpl getVSTestToolDescriptor() {
@@ -290,7 +290,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
 
         private <E extends Enum<E>> ComboBoxModel fillComboBox(Class<E> clazz) {
             ComboBoxModel r = new ComboBoxModel();
-            for (Enum<E> enumVal: clazz.getEnumConstants()) {
+            for (Enum<E> enumVal : clazz.getEnumConstants()) {
                 r.add(enumVal.toString());
             }
             return r;
@@ -348,13 +348,12 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
         }
 
         // This makes vstest.console.exe process use or skip the VSIX extensions installed (if any) in the test run.
-        if(!useVs2017Plus)
-        {
-	        if (useVsixExtensions) {
-	            args.add("/UseVsixExtensions:true");
-	        } else {
-	            args.add("/UseVsixExtensions:false");
-	        }
+        if (!useVs2017Plus) {
+            if (useVsixExtensions) {
+                args.add("/UseVsixExtensions:true");
+            } else {
+                args.add("/UseVsixExtensions:false");
+            }
         }
 
         // Target platform architecture to be used for test execution.
@@ -385,7 +384,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param value
      * @param env
      * @return
@@ -396,7 +394,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param builtOn
      * @param listener
      * @param env
@@ -426,7 +423,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param workspace
      * @param env
      * @return
@@ -456,14 +452,14 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     private String[] expandFileSet(FilePath workspace, String pattern) throws InterruptedException {
         List<String> fileNames = new ArrayList<>();
         try {
-        for (FilePath x: workspace.list(pattern))
-            fileNames.add(x.getRemote());
-        } catch (IOException ioe) {}
+            for (FilePath x : workspace.list(pattern))
+                fileNames.add(x.getRemote());
+        } catch (IOException ioe) {
+        }
         return fileNames.toArray(new String[fileNames.size()]);
     }
 
     /**
-     *
      * @param env
      * @return
      */
@@ -472,7 +468,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param env
      * @return
      */
@@ -482,7 +477,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param env
      * @return
      */
@@ -502,7 +496,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param args
      * @param run
      * @param workspace
@@ -570,7 +563,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param option
      * @param param
      * @return
@@ -580,7 +572,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param option
      * @param param
      * @return
@@ -590,7 +581,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param value
      * @return
      */
@@ -599,7 +589,6 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
-     *
      * @param args
      * @return
      */

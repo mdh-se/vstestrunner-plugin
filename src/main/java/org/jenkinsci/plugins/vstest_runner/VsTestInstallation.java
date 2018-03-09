@@ -19,7 +19,6 @@ import hudson.model.EnvironmentSpecific;
 import jenkins.model.Jenkins;
 
 /**
- *
  * @author Yasuyuki Saito
  */
 public class VsTestInstallation extends ToolInstallation implements NodeSpecific<VsTestInstallation>, EnvironmentSpecific<VsTestInstallation> {
@@ -34,7 +33,6 @@ public class VsTestInstallation extends ToolInstallation implements NodeSpecific
     private transient String pathToVsTest;
 
     /**
-     *
      * @param name
      * @param home
      */
@@ -51,7 +49,6 @@ public class VsTestInstallation extends ToolInstallation implements NodeSpecific
     }
 
     /**
-     *
      * @param environment
      * @return
      */
@@ -91,7 +88,7 @@ public class VsTestInstallation extends ToolInstallation implements NodeSpecific
         }
     }
 
-    @Initializer(after= InitMilestone.EXTENSIONS_AUGMENTED)
+    @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
     public static void onLoaded() {
         DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance().getDescriptor(VsTestInstallation.class);
         VsTestInstallation[] installations = getInstallations(descriptor);
@@ -124,11 +121,10 @@ public class VsTestInstallation extends ToolInstallation implements NodeSpecific
     }
 
     private static boolean isWindows() {
-        return File.pathSeparatorChar==';';
+        return File.pathSeparatorChar == ';';
     }
 
     /**
-     *
      * @author Yasuyuki Saito
      */
     @Extension
@@ -140,7 +136,7 @@ public class VsTestInstallation extends ToolInstallation implements NodeSpecific
 
         @Nullable
         public VsTestInstallation getInstallation(String name) {
-            for(VsTestInstallation i : getInstallations()) {
+            for (VsTestInstallation i : getInstallations()) {
                 if (i.getName().equals(name)) {
                     return i;
                 }

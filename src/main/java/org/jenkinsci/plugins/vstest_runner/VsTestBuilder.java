@@ -600,7 +600,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
         Computer computer = workspace.toComputer();
         Node node = null;
         if (computer != null) node = computer.getNode();
-        return node != null ? Jenkins.getInstance() : node;
+        return node != null ? node : Jenkins.getInstance();
     }
 
     private static class AddVsTestEnvVarsAction implements EnvironmentContributingAction {

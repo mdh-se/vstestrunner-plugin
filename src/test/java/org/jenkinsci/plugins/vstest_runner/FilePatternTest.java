@@ -61,7 +61,7 @@ public class FilePatternTest {
 
     @Test
     public void testGetTestFilesArguments() throws Exception {
-        createFile(subfolder, "testfile1.trx");
+        createFile(subfolder, "testfile 1.trx");
         createFile(subfolder, "testfile2.trx");
         createFile(subfolder, "testfile3.trx");
 
@@ -70,6 +70,17 @@ public class FilePatternTest {
         EnvVars envVars = new EnvVars();
         List<String> testFilesArguments = step.getTestFilesArguments(workspace, envVars);
         assertThat(testFilesArguments.size(), is(3));
+    }
+
+    @Test
+    public void testGetFilesArguments_WithNewLine() throws Exception {
+        createFile(subfolder, "testfile1.trx");
+        createFile(subfolder, "testfile 2.trx");
+        VsTestBuilder step = new VsTestBuilder();
+        step.setTestFiles("**/testfile1.trx\n**/testfile 2.trx\n**/*.trx");
+        EnvVars envVars = new EnvVars();
+        List<String> testFilesArguments = step.getTestFilesArguments(workspace, envVars);
+        assertThat(testFilesArguments.size(), is(2));
     }
 
     @Test

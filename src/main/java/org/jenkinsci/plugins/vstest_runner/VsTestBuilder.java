@@ -3,7 +3,9 @@ package org.jenkinsci.plugins.vstest_runner;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -431,7 +433,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
      * @throws IOException
      */
     /* package */ List<String> getTestFilesArguments(FilePath workspace, EnvVars env) throws InterruptedException {
-        ArrayList<String> args = new ArrayList<>();
+        Set<String> files = new HashSet<>();
 
         StringTokenizer testFilesTokenizer = new StringTokenizer(testFiles, " \t\r\n");
 
@@ -442,14 +444,14 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             if (!StringUtils.isBlank(testFile)) {
                 try {
                     for (FilePath filePath : workspace.list(testFile)) {
-                        args.add(appendQuote(relativize(workspace, filePath.getRemote())));
+                        files.add(appendQuote(relativize(workspace, filePath.getRemote())));
                     }
                 } catch (IOException ignored) {
                 }
             }
         }
 
-        return args;
+        return new ArrayList<>(files);
     }
 
     /**

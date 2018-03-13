@@ -430,8 +430,8 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
      * @throws InterruptedException
      * @throws IOException
      */
-    private List<String> getTestFilesArguments(FilePath workspace, EnvVars env) throws InterruptedException {
-        ArrayList<String> args = new ArrayList<String>();
+    /* package */ List<String> getTestFilesArguments(FilePath workspace, EnvVars env) throws InterruptedException {
+        ArrayList<String> args = new ArrayList<>();
 
         StringTokenizer testFilesTokenizer = new StringTokenizer(testFiles, " \t\r\n");
 
@@ -484,7 +484,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
      * @throws InterruptedException
      * @throws IOException
      */
-    private String relativize(FilePath base, String path) throws InterruptedException, IOException {
+    /* package */ String relativize(FilePath base, String path) throws InterruptedException, IOException {
         return base.toURI().relativize(new java.io.File(path).toURI()).getPath();
     }
 

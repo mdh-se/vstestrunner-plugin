@@ -362,7 +362,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             args.add(convertArgument("Platform", platformArg));
         }
 
-        // Target .NET VsTestFramework version to be used for test execution.
+        // Target .NET Framework version to be used for test execution.
         String frameworkArg = getFrameworkArgument(env);
         if (!StringUtils.isBlank(frameworkArg)) {
             args.add(convertArgument("Framework", frameworkArg));

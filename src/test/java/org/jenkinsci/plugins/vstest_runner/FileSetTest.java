@@ -101,6 +101,6 @@ public class FileSetTest {
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         j.assertBuildStatus(Result.FAILURE, build);
-        j.assertLogContains("aaa" + File.separator + "aaa.Tests.dll", build);
+        j.assertLogContains("aaa/aaa.Tests.dll", build);
     }
 }

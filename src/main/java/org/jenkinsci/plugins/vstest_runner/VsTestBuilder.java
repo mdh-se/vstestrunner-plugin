@@ -439,24 +439,16 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             testFile = replaceMacro(testFile, env);
 
             if (!StringUtils.isBlank(testFile)) {
-
-                for (String file : expandFileSet(workspace, testFile)) {
-                    args.add(appendQuote(file));
+                try {
+                    for (FilePath filePath : workspace.list(testFile)) {
+                        args.add(appendQuote(relativize(workspace, filePath.getRemote())));
+                    }
+                } catch (IOException ignored) {
                 }
             }
         }
 
         return args;
-    }
-
-    private String[] expandFileSet(FilePath workspace, String pattern) throws InterruptedException {
-        List<String> fileNames = new ArrayList<>();
-        try {
-            for (FilePath x : workspace.list(pattern))
-                fileNames.add(x.getRemote());
-        } catch (IOException ioe) {
-        }
-        return fileNames.toArray(new String[fileNames.size()]);
     }
 
     /**

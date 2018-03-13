@@ -316,6 +316,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             if (targets.size() == 0) {
                 listener.getLogger().println("no files matching the pattern " + this.testFiles);
                 if (this.failBuild) {
+                    run.setResult(Result.FAILURE);
                     throw new AbortException("no files matching the pattern " + this.testFiles);
                 }
             }

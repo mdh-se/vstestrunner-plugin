@@ -3,7 +3,9 @@ package org.jenkinsci.plugins.vstest_runner;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -316,6 +318,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             if (targets.size() == 0) {
                 listener.getLogger().println("no files matching the pattern " + this.testFiles);
                 if (this.failBuild) {
+                    run.setResult(Result.FAILURE);
                     throw new AbortException("no files matching the pattern " + this.testFiles);
                 }
             }
@@ -429,8 +432,8 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
      * @throws InterruptedException
      * @throws IOException
      */
-    private List<String> getTestFilesArguments(FilePath workspace, EnvVars env) throws InterruptedException {
-        ArrayList<String> args = new ArrayList<String>();
+    /* package */ List<String> getTestFilesArguments(FilePath workspace, EnvVars env) throws InterruptedException {
+        Set<String> files = new HashSet<>();
 
         StringTokenizer testFilesTokenizer = new StringTokenizer(testFiles, " \t\r\n");
 
@@ -439,24 +442,16 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             testFile = replaceMacro(testFile, env);
 
             if (!StringUtils.isBlank(testFile)) {
-
-                for (String file : expandFileSet(workspace, testFile)) {
-                    args.add(appendQuote(file));
+                try {
+                    for (FilePath filePath : workspace.list(testFile)) {
+                        files.add(appendQuote(relativize(workspace, filePath.getRemote())));
+                    }
+                } catch (IOException ignored) {
                 }
             }
         }
 
-        return args;
-    }
-
-    private String[] expandFileSet(FilePath workspace, String pattern) throws InterruptedException {
-        List<String> fileNames = new ArrayList<>();
-        try {
-            for (FilePath x : workspace.list(pattern))
-                fileNames.add(x.getRemote());
-        } catch (IOException ioe) {
-        }
-        return fileNames.toArray(new String[fileNames.size()]);
+        return new ArrayList<>(files);
     }
 
     /**
@@ -491,7 +486,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
      * @throws InterruptedException
      * @throws IOException
      */
-    private String relativize(FilePath base, String path) throws InterruptedException, IOException {
+    /* package */ String relativize(FilePath base, String path) throws InterruptedException, IOException {
         return base.toURI().relativize(new java.io.File(path).toURI()).getPath();
     }
 
@@ -607,7 +602,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
         Computer computer = workspace.toComputer();
         Node node = null;
         if (computer != null) node = computer.getNode();
-        return node != null ? Jenkins.getInstance() : node;
+        return node != null ? node : Jenkins.getInstance();
     }
 
     private static class AddVsTestEnvVarsAction implements EnvironmentContributingAction {

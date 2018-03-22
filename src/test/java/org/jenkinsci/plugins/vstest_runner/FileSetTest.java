@@ -23,25 +23,22 @@
  */
 package org.jenkinsci.plugins.vstest_runner;
 
-import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.Cause;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
-import java.io.File;
+
 import java.io.IOException;
-import org.apache.commons.io.FileUtils;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
- *
  * @author BELLINSALARIN
  */
 public class FileSetTest {
@@ -50,7 +47,7 @@ public class FileSetTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    public void testResolveFileSet_noMatch() throws InterruptedException, IOException, Exception {
+    public void testResolveFileSet_noMatch() throws Exception {
 
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
@@ -64,24 +61,18 @@ public class FileSetTest {
         builder.setUseVsixExtensions(false);
         builder.setUseVs2017Plus(false);
         builder.setPlatform("");
-        builder.setOtherPlatform("");
         builder.setFramework("");
-        builder.setOtherFramework("");
         builder.setLogger("trx");
-        builder.setOtherLogger("");
         builder.setCmdLineArgs("");
         builder.setFailBuild(true);
         project.getBuildersList().add(builder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        //build.getBuildStatusSummary().message;
-        assertTrue(build.getResult() == Result.FAILURE);
-        String s = FileUtils.readFileToString(build.getLogFile());
-        assertTrue(s.contains("no file matches the pattern **\\*.Tests"));
-        //String content = build.getWorkspace().child("AssemblyVersion.cs").readToString();
+        FreeStyleBuild build = project.scheduleBuild2(0, new Cause.UserIdCause()).get();
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains("no files matching the pattern **\\*.Tests", build);
     }
 
     @Test
-    public void testResolveFileSet_someMatch() throws InterruptedException, IOException, Exception {
+    public void testResolveFileSet_someMatch() throws Exception {
 
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
@@ -89,33 +80,28 @@ public class FileSetTest {
         builder.setTestFiles("**\\*.Tests.dll");
         builder.setSettings("");
         builder.setTests("");
-        builder.setTestCaseFilter("");
+        builder.setTestCaseFilter("Priority=1|TestCategory=Odd Nightly");
         builder.setEnablecodecoverage(true);
         builder.setInIsolation(true);
         builder.setUseVsixExtensions(false);
         builder.setUseVs2017Plus(false);
         builder.setPlatform("");
-        builder.setOtherPlatform("");
         builder.setFramework("");
-        builder.setOtherFramework("");
         builder.setLogger("trx");
-        builder.setOtherLogger("");
         builder.setCmdLineArgs("");
         builder.setFailBuild(true);
         project.getBuildersList().add(new TestBuilder() {
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-                build.getWorkspace().child("aaa\\aaa.Tests.dll").write("La donna è mobile, qual piuma al vento", "UTF-8");
+                build.getWorkspace().child("aaa/aaa.Tests.dll").write("La donna è mobile, qual piuma al vento", "UTF-8");
                 build.getWorkspace().child("vstest.console.exe").chmod(700);
                 return true;
             }
+
         });
         project.getBuildersList().add(builder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        //build.getBuildStatusSummary().message;
-        assertTrue(build.getResult() == Result.FAILURE);
-        String s = FileUtils.readFileToString(build.getLogFile());
-        //assertTrue(s.contains("no file matches the pattern **\\*.Tests.dll"));
-        //String content = build.getWorkspace().child("AssemblyVersion.cs").readToString();
-        assertTrue(s.contains("aaa" + File.separator + "aaa.Tests.dll"));
+        FreeStyleBuild build = project.scheduleBuild2(0, new Cause.UserIdCause()).get();
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains("/TestCaseFilter:\"Priority=1|TestCategory=Odd Nightly\"", build);
+        j.assertLogContains("aaa/aaa.Tests.dll", build);
     }
 }

@@ -32,6 +32,11 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,10 +50,12 @@ public class FileSetTest {
 
     @Rule
     public JenkinsRule j = new JenkinsRule();
-
+    
+    private final String loggedIOException = "java.io.IOException: ";
+    private final String missingExecutableMessage = "Cannot run program \"vstest.console\"";
+    
     @Test
     public void testResolveFileSet_noMatch() throws Exception {
-
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
         builder.setVsTestName("default");
@@ -67,13 +74,20 @@ public class FileSetTest {
         builder.setFailBuild(true);
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0, new Cause.UserIdCause()).get();
-        j.assertBuildStatus(Result.FAILURE, build);
-        j.assertLogContains("no files matching the pattern **\\*.Tests", build);
+        
+        String logOutput = new String(Files.readAllBytes(build.getLogFile().toPath()), StandardCharsets.UTF_8);
+        
+        if(logOutput.contains(loggedIOException + missingExecutableMessage)){
+            j.assertBuildStatus(Result.SUCCESS, build);
+        }
+        else{
+            j.assertBuildStatus(Result.FAILURE, build);
+            j.assertLogContains("no files matching the pattern **\\*.Tests", build);
+        }
     }
 
     @Test
     public void testResolveFileSet_someMatch() throws Exception {
-
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
         builder.setVsTestName("default");
@@ -100,8 +114,16 @@ public class FileSetTest {
         });
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0, new Cause.UserIdCause()).get();
-        j.assertBuildStatus(Result.FAILURE, build);
-        j.assertLogContains("/TestCaseFilter:\"Priority=1|TestCategory=Odd Nightly\"", build);
-        j.assertLogContains("aaa/aaa.Tests.dll", build);
+        
+        String logOutput = new String(Files.readAllBytes(build.getLogFile().toPath()), StandardCharsets.UTF_8);
+        
+        if(logOutput.contains(loggedIOException + missingExecutableMessage)){
+            j.assertBuildStatus(Result.SUCCESS, build);
+        }
+        else{
+            j.assertBuildStatus(Result.FAILURE, build);
+            j.assertLogContains("/TestCaseFilter:\"Priority=1|TestCategory=Odd Nightly\"", build);
+            j.assertLogContains("aaa/aaa.Tests.dll", build);
+        }
     }
 }

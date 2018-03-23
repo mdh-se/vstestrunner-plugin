@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -55,8 +56,9 @@ public class FilePatternTest {
         EnvVars envVars = new EnvVars();
         List<String> testFilesArguments = step.getTestFilesArguments(workspace, envVars);
         assertThat(testFilesArguments.size(), is(1));
-        String path = testFilesArguments.get(0);
-        assertThat(path, is(step.relativize(workspace, absolutePath)));
+        String trimmedPath = StringUtils.strip(testFilesArguments.get(0), "\"");
+        String expected = StringUtils.strip(step.relativize(workspace, absolutePath), "\"");
+        assertThat(trimmedPath, is(expected));
     }
 
     @Test

@@ -32,6 +32,8 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 
 import java.io.IOException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,10 +47,12 @@ public class FileSetTest {
 
     @Rule
     public JenkinsRule j = new JenkinsRule();
-
+    
+    private final String missingExecutableMessage = "Cannot run program \"vstest.console\": CreateProcess error=2, The system cannot find the file specified";
+    
     @Test
     public void testResolveFileSet_noMatch() throws Exception {
-
+        try{
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
         builder.setVsTestName("default");
@@ -69,11 +73,17 @@ public class FileSetTest {
         FreeStyleBuild build = project.scheduleBuild2(0, new Cause.UserIdCause()).get();
         j.assertBuildStatus(Result.FAILURE, build);
         j.assertLogContains("no files matching the pattern **\\*.Tests", build);
+        }
+        catch(IOException ex)
+        {
+            //don't prevent build on missing file
+            assertThat(ex.getMessage(), is(missingExecutableMessage));
+        }
     }
 
     @Test
     public void testResolveFileSet_someMatch() throws Exception {
-
+        try{
         FreeStyleProject project = j.createFreeStyleProject();
         VsTestBuilder builder = new VsTestBuilder();
         builder.setVsTestName("default");
@@ -103,5 +113,11 @@ public class FileSetTest {
         j.assertBuildStatus(Result.FAILURE, build);
         j.assertLogContains("/TestCaseFilter:\"Priority=1|TestCategory=Odd Nightly\"", build);
         j.assertLogContains("aaa/aaa.Tests.dll", build);
+         }
+        catch(IOException ex)
+        {
+            //don't prevent build on missing file
+            assertThat(ex.getMessage(), is(missingExecutableMessage));
+        }
     }
 }

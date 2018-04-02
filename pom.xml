@@ -12,7 +12,7 @@
   </properties>
 
   <artifactId>vstestrunner</artifactId>
-  <version>1.0.7-SNAPSHOT</version>
+  <version>1.0.7</version>
   <packaging>hpi</packaging>
   <name>Jenkins VSTest Runner plugin</name>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/VsTestRunner+Plugin</url>
@@ -21,6 +21,7 @@
     <connection>scm:git:ssh://github.com/jenkinsci/vstestrunner-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/vstestrunner-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/vstestrunner-plugin.git</url>
+    <tag>vstestrunner-1.0.7</tag>
   </scm>
   
   <developers>

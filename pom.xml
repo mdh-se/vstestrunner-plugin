@@ -21,7 +21,6 @@
     <connection>scm:git:ssh://github.com/jenkinsci/vstestrunner-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/vstestrunner-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/vstestrunner-plugin.git</url>
-    <tag>HEAD</tag>
   </scm>
   
   <developers>

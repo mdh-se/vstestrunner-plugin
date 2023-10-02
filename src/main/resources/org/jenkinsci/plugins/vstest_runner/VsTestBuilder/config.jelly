@@ -62,6 +62,10 @@
             <f:checkbox default="${descriptor.defaultFailBuild}"/>
         </f:entry>
 
+        <f:entry title="${%Skip if no tests}" field="skipIfNoTests">
+            <f:checkbox default="${descriptor.defaultSkipIfNoTests}"/>
+        </f:entry>
+
     </f:advanced>
 
 </j:jelly>

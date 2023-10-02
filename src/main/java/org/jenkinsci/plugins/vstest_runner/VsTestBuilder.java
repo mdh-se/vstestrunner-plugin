@@ -61,7 +61,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     private boolean useVs2017Plus;
     private boolean enablecodecoverage = DescriptorImpl.defaultEnableCodeCoverage;
     private boolean failBuild = DescriptorImpl.defaultFailBuild;
-
+    private boolean skipIfNoTests = DescriptorImpl.defaultSkipIfNoTests;
     @DataBoundConstructor
     public VsTestBuilder() {
 
@@ -134,6 +134,10 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
 
     public boolean isFailBuild() {
         return failBuild;
+    }
+
+    public boolean isSkipIfNoTests() {
+        return skipIfNoTests;
     }
 
     @DataBoundSetter
@@ -209,6 +213,11 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
         this.failBuild = failBuild;
     }
 
+    @DataBoundSetter
+    public void setSkipIfNoTests(boolean skipIfNoTests) {
+        this.skipIfNoTests = skipIfNoTests;
+    }
+
     @NonNull
     public VsTestInstallation getVsTest(TaskListener listener) {
         if (vsTestName == null) return VsTestInstallation.getDefaultInstallation();
@@ -234,6 +243,7 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public static final boolean defaultFailBuild = true;
+        public static final boolean defaultSkipIfNoTests = false;
         public static final boolean defaultEnableCodeCoverage = true;
         public static final String defaultLogger = VsTestLogger.TRX.toString();
 
@@ -313,11 +323,12 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
         args.add(pathToVsTest);
 
         // Target dll path
+        List<String> targets = new ArrayList<>();
         if (!StringUtils.isBlank(testFiles)) {
-            List<String> targets = getTestFilesArguments(workspace, env);
+            targets = getTestFilesArguments(workspace, env);
             if (targets.size() == 0) {
                 listener.getLogger().println("no files matching the pattern " + this.testFiles);
-                if (this.failBuild) {
+                if (this.failBuild && !this.skipIfNoTests) {
                     run.setResult(Result.FAILURE);
                     throw new AbortException("no files matching the pattern " + this.testFiles);
                 }
@@ -382,8 +393,14 @@ public class VsTestBuilder extends Builder implements SimpleBuildStep {
             args.add(replaceMacro(cmdLineArgs, env));
         }
 
-        // VSTest run.
-        execVsTest(args, run, workspace, launcher, listener, env);
+        if (targets.isEmpty() && this.skipIfNoTests) {
+            // Skip running non-existing tests
+            listener.getLogger().println("No test files were found, skip running tests.");
+        }
+        else {
+            // VSTest run.
+            execVsTest(args, run, workspace, launcher, listener, env);
+        }
     }
 
     /**
